@@ -1,22 +1,34 @@
 import os
 import sys
 import glob
+import argparse
 
 from shutil import copyfile
 
 #argv2: the folder to search
-try:
-    argv1, argv2 = sys.argv
-except:
-    argv2 = "./"#current script folder
+# try:
+#     argv1, argv2, argv3 = sys.argv
+# except:
+#     # argv2 = "./"#current script folder
+#     print("Please enter the location of dd files and where you can save the recover .jpg files")
+#     sys.exit()
 
-dir="./binary/"#target folder
+ap = argparse.ArgumentParser()
+ap.add_argument("--source", required=True, help="path to dd files", type=str)
+ap.add_argument("--binary", required=True, help="path to copied dd files", type=str)
+ap.add_argument("--output", required=True, help="path to the recover .jpg", type=str)
+
+args = vars(ap.parse_args())
+
+
+
+dir=args["binary"]#target folder
 
 #create binary directory
 if not os.path.exists(dir):
     os.makedirs(dir)
 
-dir2="./image"
+dir2=args["output"]
 
 #create "image" directory
 if not os.path.exists(dir2):
@@ -24,15 +36,15 @@ if not os.path.exists(dir2):
 
 
 
-folder=argv2
+folder=args["source"]
 files = os.listdir(folder)
 for fi in files:
     if '.dd' in fi:#file extension is .dd
         print(fi)
-        copyfile(fi, dir+fi)#copy file to dir directory
+        copyfile(fi, dir+"/"+fi)#copy file to dir directory
 
 
-for binName in glob.glob(argv2+"*.dd"):
+for binName in glob.glob(folder+"*.dd"):
 	aa=binName
 	# print(aa)
 	picName=aa.split("/")
